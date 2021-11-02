@@ -25,13 +25,7 @@ module.exports = {
   },
 
   editContact: async (contact, id) => {
-    const values = Object.values(contact);
-    const keys = Object.keys(contact);
-    let setValues = `${keys[0]}='${values[0]}'`;
-
-    for (let i = 1; i < keys.length; i++) {
-      setValues += `,${keys[i]}='${values[i]}'`;
-    }
+    let setValues = getUpdateValuesFromContact(contact);
 
     return (
       await client.query(
@@ -53,3 +47,14 @@ const getStringFromData = (data) =>
   Object.values(data)
     .map((v) => `'${v}'`)
     .join(", ");
+
+function getUpdateValuesFromContact(contact) {
+  const values = Object.values(contact);
+  const keys = Object.keys(contact);
+  let setValues = `${keys[0]}='${values[0]}'`;
+
+  for (let i = 1; i < keys.length; i++) {
+    setValues += `,${keys[i]}='${values[i]}'`;
+  }
+  return setValues;
+}
