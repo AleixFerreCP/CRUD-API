@@ -15,7 +15,7 @@ module.exports = {
   },
 
   createContact: async (contact) => {
-    const values = getStringFromData(contact);
+    const values = getCreateValuesFromContact(contact);
 
     await client.query(
       `INSERT INTO contacts(
@@ -43,7 +43,7 @@ module.exports = {
 
 // PRIVATE UTILITARY FUNCTIONS
 
-const getStringFromData = (data) =>
+const getCreateValuesFromContact = (data) =>
   Object.values(data)
     .map((v) => `'${v}'`)
     .join(", ");
