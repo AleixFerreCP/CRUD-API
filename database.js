@@ -9,13 +9,47 @@ const client = new Client({
 });
 client.connect();
 
-client
-  .query("SELECT * FROM contacts")
-  .then((data) => {
-    console.log("DATA:", data.rows);
-  })
-  .catch((error) => {
-    console.log("ERROR:", error);
-  });
+module.exports = {
+  getAllContacts: async () => {
+    return (await client.query("SELECT * FROM contacts")).rows;
+  },
 
-module.exports = {};
+  createContact: async (contact) => {
+    const values = getStringFromData(contact);
+
+    await client.query(
+      `INSERT INTO contacts(
+      name, phone, notes, secphone, email)
+      VALUES (${values});`
+    );
+  },
+
+  editContact: async (contact, id) => {
+    const values = Object.values(contact);
+    const keys = Object.keys(contact);
+    let setValues = `${keys[0]}='${values[0]}'`;
+
+    for (let i = 1; i < keys.length; i++) {
+      setValues += `,${keys[i]}='${values[i]}'`;
+    }
+
+    return (
+      await client.query(
+        `UPDATE contacts
+       SET ${setValues}
+       WHERE id='${id}'`
+      )
+    ).rowCount;
+  },
+
+  deleteContact: async (id) => {
+    return (await client.query(`DELETE FROM contacts WHERE id='${id}'`)).rowCount;
+  },
+};
+
+// PRIVATE UTILITARY FUNCTIONS
+
+const getStringFromData = (data) =>
+  Object.values(data)
+    .map((v) => `'${v}'`)
+    .join(", ");
