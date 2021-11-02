@@ -11,10 +11,10 @@ client.connect();
 
 client
   .query("SELECT * FROM contacts")
-  .then(function (data) {
+  .then((data) => {
     console.log("DATA:", data.rows);
   })
-  .catch(function (error) {
+  .catch((error) => {
     console.log("ERROR:", error);
   });
 
