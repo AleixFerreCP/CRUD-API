@@ -17,8 +17,9 @@ router.get("/:id", async (req, res) => {
 
 router.post("", async (req, res) => {
   console.log("Creating contact with info:", req.body);
-  await createContact(req.body);
-  res.status(201).json({});
+  const contact = await createContact(req.body);
+  console.log(contact);
+  res.status(201).json(contact);
 });
 
 router.put("/:id", async (req, res) => {

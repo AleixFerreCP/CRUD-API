@@ -21,11 +21,11 @@ module.exports = {
   createContact: async (contact) => {
     const values = getCreateValuesFromContact(contact);
 
-    const QUERY = `INSERT INTO contacts(name, phone, secphone, email, notes) VALUES (${values});`;
+    const QUERY = `INSERT INTO contacts(name, phone, secphone, email, notes) VALUES (${values}) RETURNING id`;
 
     console.log("QUERY: ", QUERY);
 
-    await client.query(QUERY);
+    return (await client.query(QUERY)).rows[0];
   },
 
   editContact: async (contact, id) => {
@@ -66,8 +66,8 @@ function getUpdateValuesFromContact(contact) {
 
 function getVal(v) {
   if (!v) {
-    return "''";
+    return "NULL";
   } else {
-    return `'${v}'`;
+    return `'${v.replace("'", "''")}'`;
   }
 }
