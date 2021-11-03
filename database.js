@@ -11,29 +11,31 @@ client.connect();
 
 module.exports = {
   getAllContacts: async () => {
-    return (await client.query("SELECT * FROM contacts")).rows;
+    return (await client.query("SELECT * FROM contacts ORDER BY id")).rows;
+  },
+
+  getContact: async (id) => {
+    return (await client.query("SELECT * FROM contacts WHERE id=" + id))?.rows[0];
   },
 
   createContact: async (contact) => {
     const values = getCreateValuesFromContact(contact);
 
-    await client.query(
-      `INSERT INTO contacts(
-      name, phone, notes, secphone, email)
-      VALUES (${values});`
-    );
+    const QUERY = `INSERT INTO contacts(name, phone, secphone, email, notes) VALUES (${values});`;
+
+    console.log("QUERY: ", QUERY);
+
+    await client.query(QUERY);
   },
 
   editContact: async (contact, id) => {
     let setValues = getUpdateValuesFromContact(contact);
 
-    return (
-      await client.query(
-        `UPDATE contacts
-       SET ${setValues}
-       WHERE id='${id}'`
-      )
-    ).rowCount;
+    const QUERY = `UPDATE contacts SET ${setValues} WHERE id='${id}'`;
+
+    console.log("QUERY: ", QUERY);
+
+    return (await client.query(QUERY)).rowCount;
   },
 
   deleteContact: async (id) => {
@@ -45,16 +47,27 @@ module.exports = {
 
 const getCreateValuesFromContact = (data) =>
   Object.values(data)
-    .map((v) => `'${v}'`)
+    .map((v) => {
+      if (!v) return "NULL";
+      else return `'${v.replace("'", "''")}'`;
+    })
     .join(", ");
 
 function getUpdateValuesFromContact(contact) {
   const values = Object.values(contact);
   const keys = Object.keys(contact);
-  let setValues = `${keys[0]}='${values[0]}'`;
+  let setValues = `${keys[0]}=${getVal(values[0])}`;
 
   for (let i = 1; i < keys.length; i++) {
-    setValues += `,${keys[i]}='${values[i]}'`;
+    setValues += `,${keys[i]}=${getVal(values[i])}`;
   }
   return setValues;
+}
+
+function getVal(v) {
+  if (!v) {
+    return "''";
+  } else {
+    return `'${v}'`;
+  }
 }

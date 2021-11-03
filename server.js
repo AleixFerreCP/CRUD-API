@@ -3,11 +3,13 @@
 require("dotenv").config();
 
 const express = require("express");
-const bodyParser = require("body-parser");
+const { json } = require("body-parser");
+const cors = require("cors");
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
+app.use(json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("The app is working as expected!");
