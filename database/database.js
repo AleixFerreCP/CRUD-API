@@ -1,21 +1,16 @@
-const { Client } = require("pg");
+const database = require("./connectionSingleton");
 
-const client = new Client({
-  host: process.env.PG_HOST,
-  port: process.env.PG_PORT,
-  user: process.env.PG_USER,
-  password: process.env.PG_PWD,
-  database: process.env.PG_DATABASE,
-});
-client.connect();
+authToDatabase(database);
+
+const Contacts = require("./models/contact");
 
 module.exports = {
   getAllContacts: async () => {
-    return (await client.query("SELECT * FROM contacts ORDER BY id")).rows;
+    return await Contacts.getAll();
   },
 
   getContact: async (id) => {
-    return (await client.query("SELECT * FROM contacts WHERE id=" + id))?.rows[0];
+    return await Contacts.get(id);
   },
 
   createContact: async (contact) => {
@@ -63,4 +58,13 @@ function getUpdateValuesFromContact(contact) {
 
 function getVal(v) {
   return !v ? "NULL" : `'${v.replace("'", "''")}'`;
+}
+
+async function authToDatabase(db) {
+  try {
+    await db.authenticate();
+    console.log("Connection has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
 }
