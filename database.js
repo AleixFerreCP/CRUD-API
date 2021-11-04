@@ -47,10 +47,7 @@ module.exports = {
 
 const getCreateValuesFromContact = (data) =>
   Object.values(data)
-    .map((v) => {
-      if (!v) return "NULL";
-      else return `'${v.replace("'", "''")}'`;
-    })
+    .map((v) => getVal(v))
     .join(", ");
 
 function getUpdateValuesFromContact(contact) {
@@ -65,9 +62,5 @@ function getUpdateValuesFromContact(contact) {
 }
 
 function getVal(v) {
-  if (!v) {
-    return "NULL";
-  } else {
-    return `'${v.replace("'", "''")}'`;
-  }
+  return !v ? "NULL" : `'${v.replace("'", "''")}'`;
 }
