@@ -14,6 +14,18 @@ No body required
 
 It will always return a 200 code with a list of the contacts' info.
 
+### GET "/contacts/:id"
+
+It retrieves a contact from the database with a certain id.
+
+No body required
+
+#### Response
+
+It will return a 200 code with the contact info.
+
+If the contact does not exist it will return a 404 code.
+
 ### POST "/contacts"
 
 Create a new contact.
