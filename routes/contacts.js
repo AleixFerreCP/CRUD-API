@@ -1,7 +1,7 @@
 "use strict";
 
 const { Router } = require("express");
-const { getAllContacts, getContact, createContact, editContact, deleteContact } = require("../database");
+const { getAllContacts, getContact, createContact, editContact, deleteContact } = require("../database/database");
 
 const router = Router();
 
