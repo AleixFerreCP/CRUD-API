@@ -27,10 +27,18 @@ module.exports = {
 };
 
 async function authToDatabase(db) {
-  try {
-    await db.authenticate();
-    console.log("Connection has been established successfully.");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
+  let retries = 5;
+
+  while (retries) {
+    try {
+      await db.authenticate();
+      console.log("Connection has been established successfully.");
+      break;
+    } catch (error) {
+      console.error("Unable to connect to the database:", error);
+      retries--;
+      console.log("Retries:", retries);
+      await new Promise((res) => setTimeout(res, 1000)); // wait for 1s
+    }
   }
 }
